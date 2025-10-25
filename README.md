@@ -1,3 +1,71 @@
+# Como rodar?
+## Setup do ambiente
+Primeiramente, garanta que você possui uma placa de vídeo da _NVIDIA_, pois a implementação utiliza _CUDA_!
+
+No meu caso, com a ajuda do professor Rogério Aparecido Gonçalves e do técnico Geazzy B. Marçal consegui acessar via SSH a **TitanX Pascal** que temos na Universidade Tecnológica Federal do Paraná (UTFPR). Como a placa é relativamente antiga, o _toolkit_ dela precisou ser atualizado e isso foi feito por meio dos seguintes passos:
+1. Instalei o novo pacote no repositório oficial da _NVIDIA_ no link: https://www.nvidia.com/en-us/drivers/details/249931/
+2. Passei via ssh para a máquina da UTFPR
+3. Instalei o toolkit
+
+Depois, precisei criar alguns _Symlinks_ e algumas variáveis na minha sessão para que a atualização fosse devidamente feita. No meu caso, usei:
+1. `ln -sf ~/nvidia-usr-535.261.03/extract/libcuda.so.535.261.03 \
+      ~/nvidia-usr-535.261.03/extract/libcuda.so.1`
+2. `ln -sf ~/nvidia-usr-535.261.03/extract/libnvidia-ml.so.535.261.03 \
+      ~/nvidia-usr-535.261.03/extract/libnvidia-ml.so.1`
+3. `export NVUSR=~/nvidia-usr-535.261.03/extract`
+4. `export LD_LIBRARY_PATH="$NVUSR:$LD_LIBRARY_PATH"`
+5. `export NUMBA_CUDA_DRIVER="$NVUSR/libcuda.so.1"`
+
+> O objetivo é conseguir rodar o seguinte comando sem nenhum erro no terminal: `nvidia-smi`
+
+## Rodando o código
+Agora precisamos criar um `experiment.json` para definir a configuração do ambiente, use o seguinte:
+```json
+{
+  'Experiment': {
+    'optimizer': 'afpo',
+    'num_trials': 20,
+    'target_population_size': 500,
+    'max_generations': 500,
+    'n_random_individuals_per_generation': 100,
+    'mutate_layers': None,
+    'neighbor_map_type': 'spatial',
+    'sim_steps': 100,
+    'shape': 'circle',
+    'layers': [
+        {'res': 1, 'base': True},
+        {'res': 2},
+        {'res': 4}, 
+        {'res': 8}
+    ],
+    'activation': 'sigmoid'
+  },
+  'Control': {
+    'optimizer': 'afpo',
+    'num_trials': 20,
+    'target_population_size': 500,
+    'max_generations': 500,
+    'n_random_individuals_per_generation': 100,
+    'mutate_layers': None,
+    'neighbor_map_type': 'spatial',
+    'sim_steps': 100,
+    'shape': 'circle',
+    'layers': [
+        {'res': 1, 'base': True},
+    ],
+    'activation': 'sigmoid'
+  },
+}
+```
+
+Por fim, rode o comando: 
+``` 
+python3 run_exp.py ./experiment.json saida
+```
+
+Assim, após a execução o arquivo de saída será gerada.
+
+
 # Hierarchical Neural CA Model of Morphogenesis
 
 GECCO 2024: https://dl.acm.org/doi/pdf/10.1145/3638529.3654150
