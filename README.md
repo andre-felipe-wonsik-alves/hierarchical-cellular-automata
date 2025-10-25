@@ -20,7 +20,7 @@ Depois, precisei criar alguns _Symlinks_ e algumas variáveis na minha sessão p
 
 ## Rodando o código
 Agora precisamos criar um `experiment.json` para definir a configuração do ambiente, use o seguinte:
-```json
+```
 {
   'Experiment': {
     'optimizer': 'afpo',
